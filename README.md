@@ -1,6 +1,8 @@
 # Repository
 https://github.com/BAD-AL/data_UOP_controller_patch
 
+![PC Controller Support](ControllerSupportThumbnail.png)
+
 ## About
 In February 2021 There was an Update to Star Wars Battlefront II on Steam.
 The release added native controller support to the Steam version of the Game.
