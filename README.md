@@ -20,13 +20,13 @@ I've been tinkering with that release and have gotten it into a functional state
  * You must already own the game on steam in order to use this package. If you do not own the Steam version, then buy it.
 
  ## Install
-  1. Download the latest version from the release section of the repo.
-  2. Backup your files (see the notes below to see which files to backup).
-  3. Unzip the release package, copy and paste the 'GameData' folder over your 'GameData' folder.
-  4. The following folders will be added:
+ 1. Download the latest version from the release section of the repo.
+ 2. Backup your files (see the notes below to see which files to backup).
+ 3. Unzip the release package, copy and paste the 'GameData' folder over your 'GameData' folder.
+ 4. The following folders will be added:
     * GameData/addon/000
     * GameData/addon/AAA-v1.3patch (no changes from the un-official patch release)
-  5. The following files will be overwritten (so back these up):
+ 5. The following files will be overwritten (so back these up):
     * GameData/BattlefrontII.exe
     * GameData/alsoft.ini
     * GameData/Galaxy.dll
