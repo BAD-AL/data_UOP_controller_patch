@@ -1,1 +1,3 @@
 *.script  
+TEMP/
+*.log

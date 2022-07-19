@@ -8,9 +8,10 @@
 -- Master include for StarWars: Frontline ingame interface, lua
 -- component. The game should be able to include this file and nothing
 -- else.
-
+gUsingControllerExe = true
 if(ScriptCB_GetCurrentAspect == nil) then
-    
+    print("You are using a 'BattlefrontII.exe' that does not have native Controller support.")
+    gUsingControllerExe = false
     -- These are important to define when using the mod_tools debugger with the .lvls
     -- from the Feb 9 Controller update
 
@@ -40,6 +41,50 @@ if(ScriptCB_GetCurrentAspect == nil) then
 	end
 else
     print("You are using a Battlefront 2 exe that supports a Controller!")
+end
+
+printf = function(...)
+    print(string.format(unpack(arg)))
+end
+
+if( tprint == nil ) then 
+    function getn(v)
+        local v_type = type(v);
+        if v_type == "table" then
+            return table.getn(v);
+        elseif v_type == "string" then
+            return string.len(v);
+        else
+            return;
+        end
+    end
+
+    function string.starts(str, Start)
+        return string.sub(str, 1, getn(Start)) == Start;
+    end
+
+    function tprint(t, indent)
+        if not indent then indent = 1, print(tostring(t) .. " {") end
+        if t then
+            for key,value in pairs(t) do
+                if not string.starts(tostring(key), "__") then
+                    local formatting = string.rep("    ", indent) .. tostring(key) .. "= ";
+                    if value and type(value) == "table" then
+                        print(formatting .. --[[tostring(value) ..]] " {")
+                        tprint(value, indent+1);
+                    else
+                        if(type(value) == "string") then 
+                            --print(formatting .."'" .. tostring(value) .."'" ..",")
+                            printf("%s'%s',",formatting, tostring(value))
+                        else 
+                            print(formatting .. tostring(value) ..",")
+                        end 
+                    end
+                end
+            end
+            print(string.rep("    ", indent - 1) .. "},")
+        end
+    end
 end
 
 -- added by zerted

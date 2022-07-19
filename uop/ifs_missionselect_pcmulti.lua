@@ -43,6 +43,13 @@ local setting_x_pos = 100
 local setting_y_pos = 120
 local setting_y_offset = 50
 local setting_y_offset1 = 30
+
+if(gUsingControllerExe) then 
+	-- with the 'controller' augmented exe, the mission select ui is a bit off.
+	-- reduce the widht of the option buttons so they don't go over the list boxes.
+	setting_width = 110
+end
+
 function ifs_missionselect_pcMulti_fnChangeSettingTabsLayout( this )
 	local i
 	for i = 1, table.getn( gPCMultiPlayerSettingsTabsLayout ) do
