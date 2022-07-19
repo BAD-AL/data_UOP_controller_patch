@@ -1,3 +1,4 @@
 *.script  
 TEMP/
 *.log
+working/

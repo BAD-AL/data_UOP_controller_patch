@@ -1,0 +1,54 @@
+ucft
+{
+  REQN
+  {
+    "script"
+    "ifs_missionselect_console"
+    "addme"
+	}
+
+  REQN
+  {
+    "texture"
+    "gc_background"
+    "ifs_sp_background"
+    "iface_instant_action"
+    "iface_instant_action_wide"
+    "mode_icon_avh"
+    "mode_icon_bf1"
+    "mode_icon_c"
+    "mode_icon_c1"
+    "mode_icon_c2"
+    "mode_icon_c3"
+    "mode_icon_c4"
+    "mode_icon_con"
+    "mode_icon_control"
+    "mode_icon_ctf"
+    "mode_icon_dm"
+    "mode_icon_eli"
+    "mode_icon_hctf"
+    "mode_icon_holo"
+    "mode_icon_hunt"
+    "mode_icon_ins"
+    "mode_icon_jhu"
+    "mode_icon_koh"
+    "mode_icon_lms"
+    "mode_icon_obj"
+    "mode_icon_ord66"
+    "mode_icon_race"
+    "mode_icon_rpg"
+    "mode_icon_siege"
+    "mode_icon_space"
+    "mode_icon_survival"
+    "mode_icon_tdf"
+    "mode_icon_tdm"
+    "mode_icon_uber"
+    "mode_icon_vehicle"
+    "mode_icon_vh"
+    "mode_icon_wav"
+    "mode_icon_wea"
+    "mode_icon_xtra"
+  }
+    
+}
+
