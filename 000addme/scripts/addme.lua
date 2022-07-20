@@ -429,11 +429,12 @@ end
 B			66	The B key.
 Back		8	The BACKSPACE key.
 Escape		27	The ESC key.
+Enter       13  The Enter key
 Spacebar    32
-PageDown	34	The PAGE DOWN key.
 PageUp		33	The PAGE UP key.
+PageDown	34	The PAGE DOWN key.
 ]]
-function gInput_KeyDown(this, iKey)
+function gInput_KeyDown(this, iKey)  -- (reminder for better keyboard support with the default keyboard layout)
     print("gInput_KeyDown: " .. iKey)
     if(iKey == 27 or iKey == 8 or iKey == 66) then
         this.Input_Back(this)
@@ -466,6 +467,7 @@ ifs_sp_campaign.Input_Accept = function(this)
     end
 end
 
+-- not doing these anymore 
 --ScriptCB_DoFile("ifs_freeform_battle_mode_replacement")
 --ScriptCB_DoFile("ifs_sp_campaign_console")
 --ScriptCB_DoFile("ifs_sp_console")
@@ -485,106 +487,109 @@ function simpleTableToString(the_table)
     return retVal
 end
 
-function movePlanet(this,x,y)
-        print("movePlanet ScreenName:" .. tostring(this.ScreenName))
-		-- get the joystick magnitude
-		local magnitude = x * x + y * y
-        print(string.format("movePlanet x: %d y: %d magnitude: %d", x, y, magnitude))
-		
-		-- if controller move was registered
-		--if this.movePressed then
-        --    print("movePlanet: controller move was registered")
-		--	-- if released...
-		--	if magnitude < 0.01 then
-		--		-- clear moved
-        --        print("movePlanet: clear movePressed")
-		--		this.movePressed = nil
-		--	end
-        --    print("doing nothing")
-		--else
-            print("movePlanet magnitude: " .. magnitude)
-			-- if pushed sufficiently...
-			if magnitude > 0.4096 then
-                print("movePlanet trying the move")
-				-- register moved
-				this.movePressed = true
-			
-				-- normalize the direction
-				local scale = math.sqrt(magnitude)
-				x = x / scale
-				y = -y / scale
-				
-                print("movePlanet this.planetSelected: ".. tostring(this.planetSelected))
-                print("movePlanet ifs_freeform_main.planetSelected: ".. tostring(ifs_freeform_main.planetSelected))
+if( movePlanet == nil ) then 
+    -- let's not overwrite this if it's already been defined 
+    function movePlanet(this,x,y)
+            -- code taken from ifs_freeform_main.UpdateNextPlanet
+            print("movePlanet ScreenName:" .. tostring(this.ScreenName))
+            -- get the joystick magnitude
+            local magnitude = x * x + y * y
+            print(string.format("movePlanet x: %d y: %d magnitude: %d", x, y, magnitude))
+            
+            -- if controller move was registered
+            --if this.movePressed then
+            --    print("movePlanet: controller move was registered")
+            --	-- if released...
+            --	if magnitude < 0.01 then
+            --		-- clear moved
+            --        print("movePlanet: clear movePressed")
+            --		this.movePressed = nil
+            --	end
+            --    print("doing nothing")
+            --else
+                print("movePlanet magnitude: " .. magnitude)
+                -- if pushed sufficiently...
+                if magnitude > 0.4096 then
+                    print("movePlanet trying the move")
+                    -- register moved
+                    this.movePressed = true
+                
+                    -- normalize the direction
+                    local scale = math.sqrt(magnitude)
+                    x = x / scale
+                    y = -y / scale
+                    
+                    print("movePlanet this.planetSelected: ".. tostring(this.planetSelected))
+                    print("movePlanet ifs_freeform_main.planetSelected: ".. tostring(ifs_freeform_main.planetSelected))
 
-				-- get the starting planet's screen position
-				local x0, y0 = GetScreenPosition(this.planetSelected)
-				print( string.format("Starting planet: %s x: %d y: %d", tostring(this.planetSelected), x0, y0))
-				-- for each planet...
-				local bestscore = 0
-				for index, planet in ipairs(this.planetDestination[this.planetSelected]) do
-					-- if no fleet is selected, or the destination does not have a friendly fleet...
-					if not this.fleetSelected or this.planetFleet[planet] ~= this.playerTeam then
-						-- get the planet's screen position
-						local x1, y1 = GetScreenPosition(planet)
-                        print( string.format("Candidate planet: %s x: %d y: %d", planet, x1, y1))
-						
-						-- get the normalized direction
-						local dx = x1 - x0
-						local dy = y1 - y0
-                        print( string.format("1 : normalized direction:  dx: %d dy: %d", dx, dy))
-						local scale = math.sqrt(dx * dx + dy * dy)
-						dx = dx / scale
-						dy = dy / scale
-                        print( string.format("2: normalized direction:  dx: %d dy: %d", dx, dy))
-						
-						-- get the direction score
-						local score = x * dx + y * dy
-						print(string.format("movePlanet check the best score: %d, planet: %s ", score, tostring(planet) ))
-						-- update the best planet
-						if bestscore < score then
-							bestscore = score
-							this.planetNext = planet
-						end
-					end
-				end
-                print(string.format("movePlanet next planet: %s ", tostring(this.nextPlanet) ))
-			end
-		--end
-end
+                    -- get the starting planet's screen position
+                    local x0, y0 = GetScreenPosition(this.planetSelected)
+                    print( string.format("Starting planet: %s x: %d y: %d", tostring(this.planetSelected), x0, y0))
+                    -- for each planet...
+                    local bestscore = 0
+                    for index, planet in ipairs(this.planetDestination[this.planetSelected]) do
+                        -- if no fleet is selected, or the destination does not have a friendly fleet...
+                        if not this.fleetSelected or this.planetFleet[planet] ~= this.playerTeam then
+                            -- get the planet's screen position
+                            local x1, y1 = GetScreenPosition(planet)
+                            print( string.format("Candidate planet: %s x: %d y: %d", planet, x1, y1))
+                            
+                            -- get the normalized direction
+                            local dx = x1 - x0
+                            local dy = y1 - y0
+                            print( string.format("1 : normalized direction:  dx: %d dy: %d", dx, dy))
+                            local scale = math.sqrt(dx * dx + dy * dy)
+                            dx = dx / scale
+                            dy = dy / scale
+                            print( string.format("2: normalized direction:  dx: %d dy: %d", dx, dy))
+                            
+                            -- get the direction score
+                            local score = x * dx + y * dy
+                            print(string.format("movePlanet check the best score: %d, planet: %s ", score, tostring(planet) ))
+                            -- update the best planet
+                            if bestscore < score then
+                                bestscore = score
+                                this.planetNext = planet
+                            end
+                        end
+                    end
+                    print(string.format("movePlanet next planet: %s ", tostring(this.nextPlanet) ))
+                end
+            --end
+    end
 
-ifs_freeform_fleet.Input_DPadUp = function(this, joystick)
-    movePlanet(ifs_freeform_main,0,1)
-end
+    ifs_freeform_fleet.Input_DPadUp = function(this, joystick)
+        movePlanet(ifs_freeform_main,0,1)
+    end
 
-ifs_freeform_fleet.Input_DPadDown = function(this, joystick)
-    movePlanet(ifs_freeform_main,0,-1)
-end
+    ifs_freeform_fleet.Input_DPadDown = function(this, joystick)
+        movePlanet(ifs_freeform_main,0,-1)
+    end
 
-ifs_freeform_fleet.Input_DPadLeft = function(this, joystick)
-    movePlanet(ifs_freeform_main,-1,0)
-end
+    ifs_freeform_fleet.Input_DPadLeft = function(this, joystick)
+        movePlanet(ifs_freeform_main,-1,0)
+    end
 
-ifs_freeform_fleet.Input_DPadRight = function(this, joystick)
-    movePlanet(ifs_freeform_main,1,0)
-end
+    ifs_freeform_fleet.Input_DPadRight = function(this, joystick)
+        movePlanet(ifs_freeform_main,1,0)
+    end
 
 
-ifs_freeform_fleet.Input_GeneralUp = function(this, joystick)
-    movePlanet(ifs_freeform_main,0,1)
-end
+    ifs_freeform_fleet.Input_GeneralUp = function(this, joystick)
+        movePlanet(ifs_freeform_main,0,1)
+    end
 
-ifs_freeform_fleet.Input_GeneralDown = function(this, joystick)
-    movePlanet(ifs_freeform_main,0,-1)
-end
+    ifs_freeform_fleet.Input_GeneralDown = function(this, joystick)
+        movePlanet(ifs_freeform_main,0,-1)
+    end
 
-ifs_freeform_fleet.Input_GeneralLeft = function(this, joystick)
-    movePlanet(ifs_freeform_main,-1,0)
-end
+    ifs_freeform_fleet.Input_GeneralLeft = function(this, joystick)
+        movePlanet(ifs_freeform_main,-1,0)
+    end
 
-ifs_freeform_fleet.Input_GeneralRight = function(this, joystick)
-    movePlanet(ifs_freeform_main,1,0)
-end
-
+    ifs_freeform_fleet.Input_GeneralRight = function(this, joystick)
+        movePlanet(ifs_freeform_main,1,0)
+    end
+end -- if(movePlanet == nil)
 
 print("End 000/addme.script")
