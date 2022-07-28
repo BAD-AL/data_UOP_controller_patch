@@ -12,10 +12,10 @@ local tab_pcsingle_ypos = 45
 local tab_pcsingle_width = 198.125
 
 gPCSinglePlayerTabsLayout = {
-	{ tag = "_tab_campaign",	string = "ifs.sp.campaign",			screen = "ifs_sp_campaign",		xPos = 100, width = tab_pcsingle_width - 15, yPos = tab_pcsingle_ypos, },
-	{ tag = "_tab_gc",		string = "ifs.meta.title",				screen = "ifs_sp_gc_main", width = tab_pcsingle_width + 45, yPos = tab_pcsingle_ypos, },
-	{ tag = "_tab_instant",		string = "ifs.instant.title",				screen = "ifs_missionselect", width = tab_pcsingle_width , yPos = tab_pcsingle_ypos, },
-	{ tag = "_tab_career",		string = "ifs.main.career",				screen = "ifs_careerstats", width = tab_pcsingle_width - 30, yPos = tab_pcsingle_ypos, },
+	{ tag = "_tab_campaign",	string = "ifs.sp.campaign", screen = "ifs_sp_campaign",		xPos = 100, width = tab_pcsingle_width - 15, yPos = tab_pcsingle_ypos, link_down =nil, link_up= "_tab_single" },
+	{ tag = "_tab_gc",		string = "ifs.meta.title",				screen = "ifs_sp_gc_main", width = tab_pcsingle_width + 45, yPos = tab_pcsingle_ypos, link_down =nil, link_up= "_tab_multi" },
+	{ tag = "_tab_instant",		string = "ifs.instant.title",				screen = "ifs_missionselect", width = tab_pcsingle_width , yPos = tab_pcsingle_ypos, link_down =nil, link_up= "_tab_options" },
+	{ tag = "_tab_career",		string = "ifs.main.career",				screen = "ifs_careerstats", width = tab_pcsingle_width - 30, yPos = tab_pcsingle_ypos, link_down =nil, link_up= "_tab_profile" },
 }
 
 ifs_sp_campaign_vbutton_layout = {
@@ -27,7 +27,7 @@ ifs_sp_campaign_vbutton_layout = {
 	font = gMenuButtonFont,
 	bLeftJustifyButtons = 1, 
 	buttonlist = { 
-		{ tag = "training", string = "ifs.sp.training", },
+		{ tag = "training", string = "ifs.sp.training", link_up= "_tab_campaign"},
 		{ tag = "spacetraining", string = "ifs.sp.spacetraining", },
 
 		{ tag = "riseempire", string = "ifs.meta.load.new", },
@@ -36,6 +36,7 @@ ifs_sp_campaign_vbutton_layout = {
 		{ tag = "campaign", string = "ifs.sp.campaign1.title", },
 
 		{ tag = "load_campaign", string = "ifs.meta.load.btnload", },
+        { tag = "bonus",         string = "ifs.unlock.title"},
 		{ tag = "credits", string = "ifs.credits.title", yAdd = 20,},
 	},
 	--title = "ifs.sp.campaign",
@@ -162,11 +163,11 @@ function ifs_sp_campaign_fnUpdateButtonVis(this)
 	
 	-- hide campaign list button if not activated
 	if(this.buttons.campaign) then
-		this.buttons.campaign.hidden = false
-		-- if(not this.showCampaignList) then
-		-- else
-			-- this.buttons.campaign.hidden = false
-		-- end
+		if( not this.showCampaignList) then
+            this.buttons.campaign.hidden = true
+		else
+		   this.buttons.campaign.hidden = false
+		end
 	end
 	
 	if(this.buttons.training) then
@@ -262,19 +263,14 @@ function ifs_sp_campaign_fnAskTraining(this)
 end
 
 -- movie/image background HERE --
-local movie_background = "shell_sub_left"
-local image_background = nil
---if( gPCBetaBuild ) then
-if(1) then
-	movie_background = nil
-	image_background = "iface_bg_2"
-end
+local movie_background = nil -- "shell_main"
+local image_background = "iface_bg_2"
 
 ifs_sp_campaign = NewIFShellScreen {
 	movieIntro      = nil, -- WAS "ifs_sp_campaign_intro",
-	movieBackground = nil, --movieBackground, --"shell_sub_left", -- WAS "ifs_sp_campaign",
+	movieBackground = movie_background,-- "shell_sub_left", -- WAS "ifs_sp_campaign",
 	music           = "shell_soundtrack",
-	bg_texture = "single_player_campaign", --image_background,
+	bg_texture      = image_background,
 	bNohelptext_backPC = 1,
 
 	buttons = NewIFContainer {
@@ -357,7 +353,7 @@ ifs_sp_campaign = NewIFShellScreen {
 
 	Input_Accept = function(this)
 	
-		print("ifs_sp_campaign: Input_Accept(): Entered: ", this.CurButton or "[Nil]")
+		--print("ifs_sp_campaign: Input_Accept(): Entered: ", this.CurButton or "[Nil]")
 		
 		this.iCheatState = 0
 		if(gPlatformStr == "PC") then
@@ -468,6 +464,7 @@ ifs_sp_campaign = NewIFShellScreen {
 
 	Input_Back = function(this)
 		this.iCheatState = 0
+        ifs_login.EnterDoNothing = 1
 		if(ScriptCB_IsCurProfileDirty()) then
 			this.NextScreenAfterSave = nil
 			ifs_sp_campaign_StartSaveProfile()
@@ -500,9 +497,9 @@ ifs_sp_campaign = NewIFShellScreen {
 
 ifs_sp_gc_main = NewIFShellScreen {
 	movieIntro      = nil, -- WAS "ifs_sp_campaign_intro",
-	movieBackground = nil, --movieBackground, --"shell_sub_left", -- WAS "ifs_sp_campaign",
+	movieBackground = movie_background,-- "shell_sub_left", -- WAS "ifs_sp_campaign",
 	music           = "shell_soundtrack",
-	bg_texture = "single_player_conquest", --image_background,
+	bg_texture      = image_background,
 	bNohelptext_backPC = 1,
 
 	buttons = NewIFContainer {
@@ -664,6 +661,7 @@ ifs_sp_gc_main = NewIFShellScreen {
 
 	Input_Back = function(this)
 		this.iCheatState = 0
+        ifs_login.EnterThenExit = 1
 		if(ScriptCB_IsCurProfileDirty()) then
 			this.NextScreenAfterSave = nil
 			ifs_sp_campaign_StartSaveProfile()
@@ -698,9 +696,41 @@ function ifs_sp_campaign_fnBuildScreen( this )
 	if(gPlatformStr == "PC") then
 		-- add pc profile & title version text
 		AddPCTitleText( this )
-	
+		
+		gPCMainTabsLayout[1].link_down = "_tab_campaign"
+		gPCMainTabsLayout[2].link_down = "_tab_gc"
+		gPCMainTabsLayout[3].link_down = "_tab_instant"
+		gPCMainTabsLayout[4].link_down = "_tab_career"
+		gPCMainTabsLayout[5].link_down = "_tab_career"
+		gPCMainTabsLayout[6].link_down = "_tab_career"
+
+		if(this == ifs_sp_campaign) then
+			gPCSinglePlayerTabsLayout[1].link_down = "training"
+			gPCSinglePlayerTabsLayout[2].link_down = "training"
+			gPCSinglePlayerTabsLayout[3].link_down = "training"
+			gPCSinglePlayerTabsLayout[4].link_down = "training"
+			ifs_sp_gc_vbutton_layout.buttonlist[1].link_up = "_tab_gc"
+		else
+			gPCSinglePlayerTabsLayout[1].link_down = "1"
+			gPCSinglePlayerTabsLayout[2].link_down = "1"
+			gPCSinglePlayerTabsLayout[3].link_down = "1"
+			gPCSinglePlayerTabsLayout[4].link_down = "1"
+		end
+
+
 		-- Add tabs to screen
 		ifelem_tabmanager_Create(this, gPCMainTabsLayout, gPCSinglePlayerTabsLayout)
+
+		gPCMainTabsLayout[1].link_down = nil
+		gPCMainTabsLayout[2].link_down = nil
+		gPCMainTabsLayout[3].link_down = nil
+		gPCMainTabsLayout[4].link_down = nil
+		gPCMainTabsLayout[5].link_down = nil
+		gPCMainTabsLayout[6].link_down = nil
+		gPCSinglePlayerTabsLayout[1].link_down = nil
+		gPCSinglePlayerTabsLayout[2].link_down = nil
+		gPCSinglePlayerTabsLayout[3].link_down = nil
+		gPCSinglePlayerTabsLayout[4].link_down = nil
 	end
 end
 
