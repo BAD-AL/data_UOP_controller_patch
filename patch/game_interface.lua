@@ -90,6 +90,9 @@ ScriptCB_DoFile("points")
 --
 -- Load utility functions
 ScriptCB_DoFile("interface_util")
+-- give the console title color 
+gTitleTextColor = { 246, 235, 20} -- of listbox titles, buttonlist titles yellow
+
 ScriptCB_DoFile("ifelem_button")
 ScriptCB_DoFile("ifelem_roundbutton")
 ScriptCB_DoFile("ifelem_flatbutton")

@@ -839,8 +839,8 @@ end
 ifs_missionselect_console = NewIFShellScreen {
 	nologo = 1,
 	bAcceptIsSelect = 1,
-	bg_texture = HackBGTextureForWidescreen(),
-	movieBackground = nil,
+	--bg_texture = HackBGTextureForWidescreen(),
+	movieBackground =  "shell_main",
 
 	fnDone = nil, -- Callback function to do something when the user is done
 	-- Sub-mode for full/era switch is on.
@@ -1126,10 +1126,11 @@ function ifs_missionselect_console_fnBuildScreen(this)
 	local w,h = ScriptCB_GetSafeScreenInfo() -- of the usable screen
 
 	if(gPlatformStr == "PC") then
-		this.listboxfont = "gamefont_small"
+		--this.listboxfont = "gamefont_small"
+		this.listboxfont = "gamefont_medium"
 	elseif(gPlatformStr == "PS2") then
 		this.listboxfont = "gamefont_tiny"
-        else
+	else
 		this.listboxfont = "gamefont_medium"
 	end
 

@@ -415,6 +415,9 @@ ifs_login.Input_KeyDown = function(this, iKey)
     end
 end
 
+ifs_login.bg_texture = nil
+ifs_login.movieBackground =  "shell_main"
+
 local old_ifs_sp_campaign_keydown = ifs_sp_campaign.Input_Keydown
 ifs_sp_campaign.Input_KeyDown = function(this, iKey)
     print("ifs_sp_campaign.Input_Keydown iKey= " .. tostring(iKey))
@@ -591,5 +594,8 @@ if( movePlanet == nil ) then
         movePlanet(ifs_freeform_main,1,0)
     end
 end -- if(movePlanet == nil)
+
+-- does this work? -- no
+--gTitleTextColor = { 246, 235, 20} -- of listbox titles, buttonlist titles yellow
 
 print("End 000/addme.script")

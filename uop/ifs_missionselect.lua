@@ -202,8 +202,8 @@ end
 
 ifs_missionselect = NewIFShellScreen {
 	nologo = 1,
-	bg_texture = "iface_bgmeta_space",
-	movieBackground = nil,
+	--bg_texture = "iface_bgmeta_space",
+	movieBackground = "shell_main", 
 	bNohelptext_backPC = 1,
 	
 --	-- background image.  we need to make our own since we want to hide it when the movie is visible

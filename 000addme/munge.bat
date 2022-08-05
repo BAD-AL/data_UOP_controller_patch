@@ -4,12 +4,13 @@
 :: https://www.deviantart.com/wojtekfus/art/Star-Wars-Ahsoka-651933804
 MD MUNGED
 del addme.script addme.lvl 
-del MUNGED\*.files 
+del /y MUNGED\* 
 
 :: un-comment to Generate Debug Code:
 set LUA_DEBUG_SYMBOLS=""
 
 C:\BF2_ModTools\ToolsFL\bin\pc_TextureMunge.exe -inputfile $*.tga  -checkdate -continue -platform PC -sourcedir texture -outputdir MUNGED 
+::C:\BF2_ModTools\ToolsFL\bin\pc_TextureMunge.exe -inputfile $*.tga  -checkdate -continue -platform PC -sourcedir texture2 -outputdir MUNGED 
 
 C:\BF2_ModTools\ToolsFL\bin\ScriptMunge.exe -inputfile *.lua   -continue -platform PC -sourcedir  scripts -outputdir MUNGED  
 

@@ -568,7 +568,7 @@ ifs_teamstats = NewIFShellScreen {
 			return
 		end
 
-		if(this.Helptext_Back) then
+		if(this.Helptext_Accept ~= nil) then
 			IFText_fnSetString(this.Helptext_Accept.helpstr,"ifs.stats.personalstatstitle")
 			gHelptext_fnMoveIcon(this.Helptext_Accept)
 		end

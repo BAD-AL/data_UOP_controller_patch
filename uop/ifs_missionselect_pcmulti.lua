@@ -1941,10 +1941,11 @@ end
 
 ifs_missionselect_pcMulti = NewIFShellScreen {
 	nologo = 1,
-	bg_texture = "iface_bgmeta_space",
+	--bg_texture = "iface_bgmeta_space",
 	movieIntro      = nil,
-	movieBackground = nil,
+	--movieBackground = nil,
 	bNohelptext_backPC = 1,
+	movieBackground = "shell_main", 
 	
 --	-- background image.  we need to make our own since we want to hide it when the movie is visible
 --	backImg = NewIFImage { 
@@ -2213,6 +2214,7 @@ ifs_missionselect_pcMulti = NewIFShellScreen {
 	end,
 	
 	Input_KeyDown = function(this, iKey)
+		print("ifs_missionselect_pcMulti.InputKeyDown iKey =", iKey)
 		if(gCurEditbox) then
 			
 			if gCurEditbox == this.cheatBox then
@@ -4230,3 +4232,5 @@ ifs_missionselect_pcMulti_fnBuildScreen(ifs_missionselect_pcMulti)
 ifs_missionselect_pcMulti_fnBuildScreen = nil -- dump out of memory to save
 
 AddIFScreen(ifs_missionselect_pcMulti,"ifs_missionselect_pcMulti")
+
+print("Lets go Brandon! Why no movie?")

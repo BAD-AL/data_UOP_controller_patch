@@ -87,6 +87,49 @@ if( tprint == nil ) then
     end
 end
 
+pushed_screens = {}
+
+old_ReadDataFile = ReadDataFile
+ReadDataFile = function ( ... )
+	print("ReadDataFile: ".. arg[1])
+	old_ReadDataFile(unpack(arg))
+end
+old_ScriptCB_PushScreen = ScriptCB_PushScreen
+ScriptCB_PushScreen = function(screenName)
+    print("ScriptCB_PushScreen: ", screenName, " movie: ", tostring(_G[screenName].movieBackground))
+    
+    table.insert(pushed_screens, screenName)
+    old_ScriptCB_PushScreen(screenName)
+end
+
+old_ScriptCB_PopScreen = ScriptCB_PopScreen
+ScriptCB_PopScreen = function()
+    local last_index = table.getn(pushed_screens)
+    
+    
+    table.remove(pushed_screens, last_index)
+    last_index = table.getn(pushed_screens)
+    --print("ScriptCB_PopScreen", last_index)
+    --print("ScriptCB_PopScreen: current screen= ", last_index[last_index] )
+    --print("ScriptCB_PopScreen()")
+    print("ScriptCB_PopScreen count=", last_index)
+    tprint(pushed_screens)
+    
+    old_ScriptCB_PopScreen()
+end
+
+local oldScriptCB_StopMovie = ScriptCB_StopMovie
+ScriptCB_StopMovie = function(...)
+    print("ScriptCB_StopMovie() called")
+    return oldScriptCB_StopMovie(unpack(arg))
+end
+
+local oldScriptCB_CloseMovie = ScriptCB_CloseMovie
+ScriptCB_CloseMovie = function(...)
+    print("ScriptCB_CloseMovie() called")
+    return oldScriptCB_CloseMovie(unpack(arg))
+end
+
 -- added by zerted
 print("shell_interface: Entered")
  __v13patchSettings_noColors__ = "..\\..\\addon\\AAA-v1.3patch\\settings\\noColors.txt"
@@ -137,6 +180,9 @@ end
 --
 -- Load interface utility functions, elements (ifelem_*)
 ScriptCB_DoFile("interface_util")
+-- give the console title color 
+gTitleTextColor = { 246, 235, 20} -- of listbox titles, buttonlist titles yellow
+
 ScriptCB_DoFile("ifelem_button")
 ScriptCB_DoFile("ifelem_roundbutton")
 ScriptCB_DoFile("ifelem_flatbutton")
@@ -163,6 +209,33 @@ if(gPlatformStr == "PC") then
     ScriptCB_DoFile("ifelem_editbox")
 end
 
+print("overriding AddIFScreen")
+-- setup movie stuff by overriding AddIFScreen
+local oldAddIFScreen = AddIFScreen
+AddIFScreen= function(screen_table, screen_name)
+    --print("AddIFScreen: ", screen_name)
+    if(    screen_name == "ifs_login" 
+        or screen_name == "ifs_start" 
+        or screen_name == "ifs_main" 
+        or screen_name == "ifs_mp" 
+      ) then
+        screen_table.movieBackground = "shell_main"
+    elseif( screen_name == "ifs_split_profile"
+         or screen_name == "ifs_sp"
+         or screen_name == "ifs_sp_campaign"
+         or screen_name == "ifs_sp_briefing"
+         or screen_name == "ifs_instant_options_overview"
+    ) then
+        screen_table.movieBackground = "shell_sub_left"
+    end
+
+    if( screen_table.movieBackground ~= nil) then -- show the movies
+        screen_table.bg_texture = nil
+    end
+    print("AddIFScreen: ", screen_name, " movie: ", tostring(screen_table.movieBackground), 
+                                        "bg_texture", tostring(screen_table.bg_texture))
+    return oldAddIFScreen(screen_table, screen_name)
+end
 ---------- added by zerted --------------
 ScriptCB_DoFile("ifs_era_handler")
 
@@ -170,7 +243,7 @@ local r0 = 10
 local r1 = nil 
 for i = 0, r0, 1 do 
 	if ScriptCB_IsFileExist("custom_gc_" .. i .. ".lvl") == 0 then
-		print("shell_interface: No custom_gc_" .. i .. ".lvl")
+		--print("shell_interface: No custom_gc_" .. i .. ".lvl")
 	else
 		print("shell_interface: Found custom_gc_" .. i .. ".lvl")
 		ReadDataFile("custom_gc_" .. i .. ".lvl")
