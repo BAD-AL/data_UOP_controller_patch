@@ -1246,15 +1246,16 @@ print("ifs_era_handler - Entered")
 			print("custom_CheckChangeMovies(): Update(): Time to change movies")
 
 			ifs_missionselect_pcMulti_ChangeMovieFile(this.movieFile)
-    		ifelem_shellscreen_fnStartMovie(this.movieName,
-											-1,--nil,--1,
-											nil,
-											nil, --2,--1,--nil,
-											this.movieX,--375,
-											this.movieY,--22,
-											this.movieW,--150,
-											this.movieH--150
-											)
+    		--ifelem_shellscreen_fnStartMovie(this.movieName,
+			--								-1,--nil,--1,
+			--								nil,
+			--								nil, --2,--1,--nil,
+			--								this.movieX,--375,
+			--								this.movieY,--22,
+			--								this.movieW,--150,
+			--								this.movieH--150
+			--								)
+			ifelem_shellscreen_fnStartMovie(this.movieName,1, nil, true)
 		    this.movieName = nil;
 
 			--print("custom_CheckChangeMovies(): Update(): Finished changing movies")
@@ -1355,7 +1356,7 @@ print("ifs_era_handler - Entered")
 				bIsTheCheatBox = 1,
 		}
 		
-		--Note: this is more of the flyby movie border than a border for the cheat box
+		--[[Note: this is more of the flyby movie border than a border for the cheat box
 		this.cheatBorder = NewButtonWindow {
 			ZPos = 250,
 			ScreenRelativeX = 0, -- left side of screen
@@ -1366,7 +1367,7 @@ print("ifs_era_handler - Entered")
 			height = 160,
 			--titleText = "ifs.missionselect.playlist",
 			font = "gamefont_small"
-		}
+		}]]
 	end
 	
 	--

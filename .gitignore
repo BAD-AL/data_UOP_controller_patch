@@ -3,3 +3,6 @@ TEMP/
 *.log
 working/
 play/
+loc/
+*.list
+ZeroMunge/

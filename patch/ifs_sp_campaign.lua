@@ -1,6 +1,8 @@
+------------------------------------------------------------------
+-- uop recovered source
+-- by Anakain
+------------------------------------------------------------------
 
--- C:\BF2_ModTools\assets\Shell\scripts\PC\ifs_sp_campaign.lua
--- PC luac code size = 14207; PC code:
 --
 -- Copyright (c) 2005 Pandemic Studios, LLC. All rights reserved.
 --
@@ -10,10 +12,10 @@ local tab_pcsingle_ypos = 45
 local tab_pcsingle_width = 198.125
 
 gPCSinglePlayerTabsLayout = {
-	{ tag = "_tab_campaign",	string = "ifs.sp.campaign",			screen = "ifs_sp_campaign",		xPos = 100, width = tab_pcsingle_width - 15, yPos = tab_pcsingle_ypos, },
-	{ tag = "_tab_gc",		string = "ifs.meta.title",				screen = "ifs_sp_gc_main", width = tab_pcsingle_width + 45, yPos = tab_pcsingle_ypos, },
-	{ tag = "_tab_instant",		string = "ifs.instant.title",				screen = "ifs_missionselect", width = tab_pcsingle_width , yPos = tab_pcsingle_ypos, },
-	{ tag = "_tab_career",		string = "ifs.main.career",				screen = "ifs_careerstats", width = tab_pcsingle_width - 30, yPos = tab_pcsingle_ypos, },
+	{ tag = "_tab_campaign",	string = "ifs.sp.campaign",   screen = "ifs_sp_campaign",   xPos = 100, width = tab_pcsingle_width - 15, yPos = tab_pcsingle_ypos, link_down =nil, link_up= "_tab_single" },
+	{ tag = "_tab_gc",			string = "ifs.meta.title",	  screen = "ifs_sp_gc_main",    width = tab_pcsingle_width + 45, yPos = tab_pcsingle_ypos, link_down =nil, link_up= "_tab_multi" },
+	{ tag = "_tab_instant",		string = "ifs.instant.title", screen = "ifs_missionselect", width = tab_pcsingle_width , yPos = tab_pcsingle_ypos, link_down =nil, link_up= "_tab_options" },
+	{ tag = "_tab_career",		string = "ifs.main.career",	  screen = "ifs_careerstats",   width = tab_pcsingle_width - 30, yPos = tab_pcsingle_ypos, link_down =nil, link_up= "_tab_profile" },
 }
 
 ifs_sp_campaign_vbutton_layout = {
@@ -23,9 +25,9 @@ ifs_sp_campaign_vbutton_layout = {
 	xSpacing = 10,
 	ySpacing = 5,
 	font = gMenuButtonFont,
-	bLeftJustifyButtons = 1, 
+	--bLeftJustifyButtons = 1, 
 	buttonlist = { 
-		{ tag = "training", string = "ifs.sp.training", },
+		{ tag = "training", string = "ifs.sp.training", link_up= "_tab_campaign"},
 		{ tag = "spacetraining", string = "ifs.sp.spacetraining", },
 
 		{ tag = "riseempire", string = "ifs.meta.load.new", },
@@ -34,9 +36,10 @@ ifs_sp_campaign_vbutton_layout = {
 		{ tag = "campaign", string = "ifs.sp.campaign1.title", },
 
 		{ tag = "load_campaign", string = "ifs.meta.load.btnload", },
-        { tag = "trailer",       string = "ifs.trailer.title",},
+        --{ tag = "bonus",         string = "ifs.unlock.title"},
 		{ tag = "credits", string = "ifs.credits.title", yAdd = 20,},
 	},
+	title = "ifs.main.title",
 	--title = "ifs.sp.campaign",
 --	rotY = 35,
 }
@@ -49,16 +52,17 @@ ifs_sp_gc_vbutton_layout = {
 	ySpacing = 5,
 	font = gMenuButtonFont,
 	bLeftJustifyButtons = 1, 
-	buttonlist = { 
-		{ tag = "1", string = "ifs.meta.Configs.1", },
-		{ tag = "2", string = "ifs.meta.Configs.2", },
-		{ tag = "3", string = "ifs.meta.Configs.3", },
-		{ tag = "4", string = "ifs.meta.Configs.4", },
-		-- no splitscreen on PC
-		--{ tag = "custom", string = "ifs.meta.Configs.custom", },
-		{ tag = "load", string = "ifs.meta.load.btnload", },
-	},
-	--title = "ifs.meta.title",
+	buttonlist = custom_GetGCButtonList(),
+	-- { 
+		-- { tag = "1", string = "ifs.meta.Configs.1", },
+		-- { tag = "2", string = "ifs.meta.Configs.2", },
+		-- { tag = "3", string = "ifs.meta.Configs.3", },
+		-- { tag = "4", string = "ifs.meta.Configs.4", },
+		-- -- no splitscreen on PC
+		-- --{ tag = "custom", string = "ifs.meta.Configs.custom", },
+		-- { tag = "load", string = "ifs.meta.load.btnload", },
+	-- },
+	title = "ifs.meta.title",
 --	rotY = 35,
 }
 
@@ -160,10 +164,10 @@ function ifs_sp_campaign_fnUpdateButtonVis(this)
 	
 	-- hide campaign list button if not activated
 	if(this.buttons.campaign) then
-		if(not this.showCampaignList) then
-			this.buttons.campaign.hidden = true
+		if( not this.showCampaignList) then
+            this.buttons.campaign.hidden = true
 		else
-			this.buttons.campaign.hidden = false
+		   this.buttons.campaign.hidden = false
 		end
 	end
 	
@@ -200,7 +204,7 @@ function ifs_sp_gc_fnUpdateButtonVis(this)
 		this.buttons["4"].bDimmed = (not bCompletedRise) and (not bIsSplit)
 	end
 	if(this.buttons.custom) then
-		this.buttons.custom.hidden = not bIsSplit
+		this.buttons.custom.bDimmed = this.buttons["1"].bDimmed
 	end
 	if(this.buttons.load) then
 		this.buttons.load.bDimmed = (not bCompletedTraining) and (not bIsSplit)
@@ -260,19 +264,14 @@ function ifs_sp_campaign_fnAskTraining(this)
 end
 
 -- movie/image background HERE --
-local movie_background = "shell_sub_left"
-local image_background = nil
---if( gPCBetaBuild ) then
-if(1) then
-	movie_background = nil
-	image_background = "iface_bg_2"
-end
+local movie_background =  "shell_main"
+local image_background = "iface_bg_2"
 
 ifs_sp_campaign = NewIFShellScreen {
 	movieIntro      = nil, -- WAS "ifs_sp_campaign_intro",
-	movieBackground = nil, --movieBackground, --"shell_sub_left", -- WAS "ifs_sp_campaign",
+	movieBackground = movie_background,-- "shell_sub_left", -- WAS "ifs_sp_campaign",
 	music           = "shell_soundtrack",
-	bg_texture = "single_player_campaign", --image_background,
+	--bg_texture      = image_background,
 	bNohelptext_backPC = 1,
 
 	buttons = NewIFContainer {
@@ -281,12 +280,8 @@ ifs_sp_campaign = NewIFShellScreen {
 	},
 
 	Enter = function(this, bFwd)
-		--gPCBetaBuild = "brad is a crapface"
-		if(gPCBetaBuild) then
-			--ScriptCB_PopScreen()	
-			ScriptCB_PushScreen("ifs_mpgs_login")
-			return
-		end
+		print("ifs_sp_campaign.Enter:")
+
 		-- tabs	
 		if(gPlatformStr == "PC") then
 			-- set pc profile & title version text
@@ -305,8 +300,16 @@ ifs_sp_campaign = NewIFShellScreen {
 			ScriptCB_CloseNetShell(1)			
 			ScriptCB_SetInNetGame( nil )			
 		end
-	
+		print("ifs_sp_campaign.Enter gMovieStream: ".. tostring(gMovieStream))
+		if gMovieStream ~=  "movies\\shell.mvs" then 
+			ScriptCB_CloseMovie()
+			gMovieStream =  "movies\\shell.mvs"
+			ScriptCB_OpenMovie(gMovieStream, "")
+		end
+		
 		gIFShellScreenTemplate_fnEnter(this, bFwd) -- call default enter function
+		
+		print("ifs_sp_campaign.Enter: ScriptCB_IsMoviePlaying():", ScriptCB_IsMoviePlaying())
 		gMovieDisabled = nil
 
 		if(bFwd and ScriptCB_IsCampaignStateSaved()) then
@@ -342,6 +345,12 @@ ifs_sp_campaign = NewIFShellScreen {
 
 		gMovieAlwaysPlay = 1
 		this.iCheatState = 0
+		--if not ScriptCB_IsMoviePlaying() then
+		--	print("ifs_sp_campaign: try to play movie")
+		--	ScriptCB_StopMovie()
+		--	ifelem_shellscreen_fnStartMovie(this.movieBackground,1, nil, true)
+		--end
+		if CheckMovie then CheckMovie(this) end
 	end,
 	
 	Exit = function(this, bFwd)
@@ -354,6 +363,9 @@ ifs_sp_campaign = NewIFShellScreen {
 	end,
 
 	Input_Accept = function(this)
+	
+		print("ifs_sp_campaign: Input_Accept(): Entered: ", tostring(this.CurButton) )
+		
 		this.iCheatState = 0
 		if(gPlatformStr == "PC") then
 			-- If the tab manager handled this event, then we're done
@@ -384,10 +396,7 @@ ifs_sp_campaign = NewIFShellScreen {
 				ScriptCB_SetLastBattleVictoryValid(nil)
 				ifs_movietrans_PushScreen(ifs_campaign_main)
 			end
-		elseif (this.CurButton == "trailer") then
-            ifelm_shellscreen_fnPlaySound(this.acceptSound)
-            ScreenToPush = ifs_trailer
-        elseif (this.CurButton == "credits") then
+		elseif (this.CurButton == "credits") then
 			ScreenToPush = ifs_credits
 		elseif (this.CurButton == "meta") then
 			ifelm_shellscreen_fnPlaySound(this.acceptSound)
@@ -466,6 +475,7 @@ ifs_sp_campaign = NewIFShellScreen {
 
 	Input_Back = function(this)
 		this.iCheatState = 0
+        ifs_login.EnterDoNothing = 1
 		if(ScriptCB_IsCurProfileDirty()) then
 			this.NextScreenAfterSave = nil
 			ifs_sp_campaign_StartSaveProfile()
@@ -498,9 +508,9 @@ ifs_sp_campaign = NewIFShellScreen {
 
 ifs_sp_gc_main = NewIFShellScreen {
 	movieIntro      = nil, -- WAS "ifs_sp_campaign_intro",
-	movieBackground = nil, --movieBackground, --"shell_sub_left", -- WAS "ifs_sp_campaign",
+	movieBackground = movie_background,-- "shell_sub_left", -- WAS "ifs_sp_campaign",
 	music           = "shell_soundtrack",
-	bg_texture = "single_player_conquest", --image_background,
+	--bg_texture      = image_background,
 	bNohelptext_backPC = 1,
 
 	buttons = NewIFContainer {
@@ -590,7 +600,7 @@ ifs_sp_gc_main = NewIFShellScreen {
 		-- Next screen to go to at end of Input_Accept, if this is not-nil
 		-- at the bottom
 		local ScreenToPush = nil
-
+		
 		if (this.CurButton == "riseempire") then
 			-- Ken, do something in ifs_freeform_rise_newload's "new" code.
 			--if(ifs_sp_campaign_fnAskTraining(this)) then
@@ -621,8 +631,11 @@ ifs_sp_gc_main = NewIFShellScreen {
 		else
 			-- always clear the quit player here
 			ScriptCB_SetQuitPlayer(1)
+			print("ifs_sp_campaign.Input_Accept GC CurButton: ",  tostring(this.CurButton), type(this.CurButton))
+			ScreenToPush = ifs_freeform_main
+			if not custom_PressedGCButton(this.CurButton) then 
+			
 			--if(ifs_sp_campaign_fnAskTraining(this)) then 
-				ScreenToPush = ifs_freeform_main
 				if (this.CurButton == "1") then
 					-- rebel scenario
 					ifs_freeform_start_all(ifs_freeform_main)
@@ -630,15 +643,18 @@ ifs_sp_gc_main = NewIFShellScreen {
 					-- cis scenario
 					ifs_freeform_start_cis(ifs_freeform_main)
 				elseif (this.CurButton == "3") then
-					-- republic scenario
+					print("-- republic scenario")
 					ifs_freeform_start_rep(ifs_freeform_main)
 				elseif (this.CurButton == "4") then
 					-- empire scenario
 					ifs_freeform_start_imp(ifs_freeform_main)
+				elseif (this.CurButton == "0") then
+					print("ifs_sp_gc_main: Input_Accept(): Button pressed: 0")
+					ifs_freeform_start_zer(ifs_freeform_main)
 				else
 					ScreenToPush = nil
 				end
-			--end
+			end
 		end
 
 		if(ScreenToPush) then
@@ -656,6 +672,7 @@ ifs_sp_gc_main = NewIFShellScreen {
 
 	Input_Back = function(this)
 		this.iCheatState = 0
+        ifs_login.EnterThenExit = 1
 		if(ScriptCB_IsCurProfileDirty()) then
 			this.NextScreenAfterSave = nil
 			ifs_sp_campaign_StartSaveProfile()
@@ -690,9 +707,41 @@ function ifs_sp_campaign_fnBuildScreen( this )
 	if(gPlatformStr == "PC") then
 		-- add pc profile & title version text
 		AddPCTitleText( this )
-	
+		
+		gPCMainTabsLayout[1].link_down = "_tab_campaign"
+		gPCMainTabsLayout[2].link_down = "_tab_gc"
+		gPCMainTabsLayout[3].link_down = "_tab_instant"
+		gPCMainTabsLayout[4].link_down = "_tab_career"
+		gPCMainTabsLayout[5].link_down = "_tab_career"
+		gPCMainTabsLayout[6].link_down = "_tab_career"
+
+		if(this == ifs_sp_campaign) then
+			gPCSinglePlayerTabsLayout[1].link_down = "training"
+			gPCSinglePlayerTabsLayout[2].link_down = "training"
+			gPCSinglePlayerTabsLayout[3].link_down = "training"
+			gPCSinglePlayerTabsLayout[4].link_down = "training"
+			ifs_sp_gc_vbutton_layout.buttonlist[1].link_up = "_tab_gc"
+		else
+			gPCSinglePlayerTabsLayout[1].link_down = "1"
+			gPCSinglePlayerTabsLayout[2].link_down = "1"
+			gPCSinglePlayerTabsLayout[3].link_down = "1"
+			gPCSinglePlayerTabsLayout[4].link_down = "1"
+		end
+
+
 		-- Add tabs to screen
 		ifelem_tabmanager_Create(this, gPCMainTabsLayout, gPCSinglePlayerTabsLayout)
+
+		gPCMainTabsLayout[1].link_down = nil
+		gPCMainTabsLayout[2].link_down = nil
+		gPCMainTabsLayout[3].link_down = nil
+		gPCMainTabsLayout[4].link_down = nil
+		gPCMainTabsLayout[5].link_down = nil
+		gPCMainTabsLayout[6].link_down = nil
+		gPCSinglePlayerTabsLayout[1].link_down = nil
+		gPCSinglePlayerTabsLayout[2].link_down = nil
+		gPCSinglePlayerTabsLayout[3].link_down = nil
+		gPCSinglePlayerTabsLayout[4].link_down = nil
 	end
 end
 

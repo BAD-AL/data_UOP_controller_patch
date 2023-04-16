@@ -92,44 +92,54 @@ pushed_screens = {}
 old_ReadDataFile = ReadDataFile
 ReadDataFile = function ( ... )
 	print("ReadDataFile: ".. arg[1])
-	old_ReadDataFile(unpack(arg))
+	return old_ReadDataFile(unpack(arg))
 end
 old_ScriptCB_PushScreen = ScriptCB_PushScreen
 ScriptCB_PushScreen = function(screenName)
-    print("ScriptCB_PushScreen: ", screenName, " movie: ", tostring(_G[screenName].movieBackground))
+    local movieName = _G[screenName].movieBackground
+    local texName = _G[screenName].bg_texture
+    printf("ScriptCB_PushScreen: '%s' movie: %s bg_tex: %s", screenName,  tostring(movieName), tostring(texName) )
     
     table.insert(pushed_screens, screenName)
-    old_ScriptCB_PushScreen(screenName)
+    retVal =  old_ScriptCB_PushScreen(screenName)
+    --CheckMovie(_G[screenName])
+    return retVal
 end
 
 old_ScriptCB_PopScreen = ScriptCB_PopScreen
-ScriptCB_PopScreen = function()
+ScriptCB_PopScreen = function(...)
     local last_index = table.getn(pushed_screens)
-    
-    
     table.remove(pushed_screens, last_index)
     last_index = table.getn(pushed_screens)
-    --print("ScriptCB_PopScreen", last_index)
-    --print("ScriptCB_PopScreen: current screen= ", last_index[last_index] )
-    --print("ScriptCB_PopScreen()")
     print("ScriptCB_PopScreen count=", last_index)
     tprint(pushed_screens)
-    
-    old_ScriptCB_PopScreen()
+    return old_ScriptCB_PopScreen(unpack(arg))
 end
 
 local oldScriptCB_StopMovie = ScriptCB_StopMovie
 ScriptCB_StopMovie = function(...)
-    print("ScriptCB_StopMovie() called")
+    print("  ScriptCB_IsMoviePlaying():", tostring(ScriptCB_IsMoviePlaying()))
     return oldScriptCB_StopMovie(unpack(arg))
 end
 
 local oldScriptCB_CloseMovie = ScriptCB_CloseMovie
 ScriptCB_CloseMovie = function(...)
     print("ScriptCB_CloseMovie() called")
+    print("  ScriptCB_IsMoviePlaying():", tostring(ScriptCB_IsMoviePlaying()))
     return oldScriptCB_CloseMovie(unpack(arg))
 end
 
+function  CheckMovie(this)
+    if this.movieBackground ~= nil then 
+        if not ScriptCB_IsMoviePlaying()  then
+            print("CheckMovie: try to play movie", tostring(this.movieBackground))
+            ScriptCB_StopMovie()
+            ifelem_shellscreen_fnStartMovie(this.movieBackground,1, nil, true)
+        else
+            print("CheckMovie: movie is playing")
+        end
+    end
+end
 -- added by zerted
 print("shell_interface: Entered")
  __v13patchSettings_noColors__ = "..\\..\\addon\\AAA-v1.3patch\\settings\\noColors.txt"
@@ -209,33 +219,6 @@ if(gPlatformStr == "PC") then
     ScriptCB_DoFile("ifelem_editbox")
 end
 
-print("overriding AddIFScreen")
--- setup movie stuff by overriding AddIFScreen
-local oldAddIFScreen = AddIFScreen
-AddIFScreen= function(screen_table, screen_name)
-    --print("AddIFScreen: ", screen_name)
-    if(    screen_name == "ifs_login" 
-        or screen_name == "ifs_start" 
-        or screen_name == "ifs_main" 
-        or screen_name == "ifs_mp" 
-      ) then
-        screen_table.movieBackground = "shell_main"
-    elseif( screen_name == "ifs_split_profile"
-         or screen_name == "ifs_sp"
-         or screen_name == "ifs_sp_campaign"
-         or screen_name == "ifs_sp_briefing"
-         or screen_name == "ifs_instant_options_overview"
-    ) then
-        screen_table.movieBackground = "shell_sub_left"
-    end
-
-    if( screen_table.movieBackground ~= nil) then -- show the movies
-        screen_table.bg_texture = nil
-    end
-    print("AddIFScreen: ", screen_name, " movie: ", tostring(screen_table.movieBackground), 
-                                        "bg_texture", tostring(screen_table.bg_texture))
-    return oldAddIFScreen(screen_table, screen_name)
-end
 ---------- added by zerted --------------
 ScriptCB_DoFile("ifs_era_handler")
 
@@ -270,6 +253,78 @@ end
 --
 --
 
+------------------------------------------------------------------
+
+print("overriding AddIFScreen")
+-- setup movie stuff by overriding AddIFScreen
+local oldAddIFScreen = AddIFScreen
+AddIFScreen= function(screen_table, screen_name)
+    --[[print("AddIFScreen: ", screen_name)
+    replace_table ={
+        ifs_login= "shell_main", 
+        ifs_start= "shell_main", 
+        ifs_main= "shell_main", 
+        ifs_mp= "shell_main", 
+        ifs_sp_campaign= "shell_main",
+        ifs_mpgs_login= "shell_main",
+        ifs_opt_pccontrols="shell_main",
+        ifs_saveop="shell_main",
+
+        ifs_split_profile = "shell_sub_left",
+        --ifs_saveop = "shell_sub_left",
+        ifs_sp = "shell_sub_left",
+        ifs_sp_briefing = "shell_sub_left",
+        ifs_instant_options_overview = "shell_sub_left",
+
+        ifs_opt_general = "shell_sub_left",
+        ifs_opt_pcvideo = "shell_sub_left",
+        ifs_opt_sound = "shell_sub_left",
+        ifs_opt_mp = "shell_sub_left",
+    }
+    if( replace_table[screen_name] ~= nil) then
+        screen_table.movieBackground = replace_table[screen_name]
+        printf("AddIFScreen: setting '%s' movie to %s", screen_name, replace_table[screen_name])
+    end]]
+    if( screen_table.movieBackground ~= nil) then -- show the movies
+        screen_table.bg_texture = nil
+    end
+    --print("AddIFScreen: ", screen_name, " movie: ", tostring(screen_table.movieBackground), 
+    --                                    "bg_texture", tostring(screen_table.bg_texture))
+    printf("AddIFScreen:\t%s  movie:\t%s bg_texture:\t%s",
+            screen_name,tostring(screen_table.movieBackground), tostring(screen_table.bg_texture))
+    return oldAddIFScreen(screen_table, screen_name)
+end
+--[[
+old_ScriptCB_SetIFScreen = ScriptCB_SetIFScreen
+ScriptCB_SetIFScreen = function(screen_name)
+    local movieName = _G[screen_name].movieBackground
+    local bgTexName = _G[screen_name].bg_texture
+    printf("ScriptCB_SetIFScreen: '%s' movie: %s bg_tex: %s", screen_name,  tostring(movieName), tostring(bgTexName) )
+    old_ScriptCB_SetIFScreen(screen_name)
+    local screen_table = _G[screen_name]
+    if screen_table ~= nil then 
+        CheckMovie(screen_table)
+    end
+    
+end
+]]
+------------------------------------------------------------------
+
+function SetMovie(movieFile, movieName)
+	print("SetMovie:", tostring(movieFile), tostring(movieName))
+
+	local fullpath = movieFile .. ".mvs"
+	if( gMovieStream ~= fullpath) then
+		ScriptCB_CloseMovie()
+		gMovieStream = fullpath
+		ScriptCB_OpenMovie(gMovieStream, "")
+	end
+	if( gMovieName ~= movieName) then
+		gMovieName = movieName
+		ScriptCB_StopMovie()
+		ifelem_shellscreen_fnStartMovie(movieName,1, nil, true)
+	end
+end
 -- Load all the screens, which'll self-register themselves into C/C++
 
 -- Utility stuff first.
@@ -510,5 +565,29 @@ gMusicStream     = OpenAudioStream("sound\\shell.lvl", "shell_music")
 gMovieTutorialPostFix = ""
 print( "shell_interface: Opening movie:",gMovieStream)
 ScriptCB_OpenMovie(gMovieStream, "")
+ifelem_shellscreen_fnStartMovie("shell_main",1, nil, true)
+
 ScriptCB_SetMovieAudioBus("shellmovies")
-print("shell_interface: Leaving")
+
+
+function printGlobalVariablesWithString(str)
+    local lowerStr = string.lower(str)
+    local lowerName = ""
+    for name, value in pairs(_G) do
+      lowerName = string.lower(name)
+      if string.find(lowerName, lowerStr) ~= nil then
+        print("printGlobalVariablesWithString:",name)
+      end
+    end
+end
+
+--printGlobalVariablesWithString("movie")
+
+--old_gIFShellScreenTemplate_fnEnter = gIFShellScreenTemplate_fnEnter
+--gIFShellScreenTemplate_fnEnter = function(this, bFwd)
+--    print("gIFShellScreenTemplate_fnEnter: ", tostring(this.ScreenName))
+--    old_gIFShellScreenTemplate_fnEnter(this,bFwd)
+--    CheckMovie(this)
+--end
+
+print("shell_interface: Leaving; ScriptCB_IsMoviePlaying():", tostring(ScriptCB_IsMoviePlaying()))

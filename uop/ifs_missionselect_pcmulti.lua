@@ -624,6 +624,42 @@ function ifs_missionselect_pcMulti_fnToggleOrder(this)
 	end
 end
 
+shell_movies_included ={
+	bes1  = "bes1fly",
+	bes2  = "bes2fly",
+	cor1  = "cor1fly",
+	dag1  = "dag1fly",
+	dea1  = "dea1fly",
+	end1  = "end1fly",
+	geo1  = "geo1fly",
+	fel1  = "fel1fly",
+	hot1  = "hot1fly",
+	kam1  = "kam1fly",
+	kas1  = "kas1fly",
+	kas2  = "kas2fly",
+	mus1  = "mus1fly",
+	myg1  = "myg1fly",
+	nab1  = "nab1fly",
+	nab2  = "nab2fly",
+	pol1  = "pol1fly",
+	spa1  = "spa2fly",
+	spa3  = "spa2fly",
+	spa6  = "spa2fly",
+	spa7  = "spa2fly",
+	spa8  = "spa2fly",
+	spa9  = "spa2fly",
+	tan1  = "tan1fly",
+	tat1  = "tat1fly",
+	tat2  = "tat2fly",
+	tat3  = "tat3fly",
+	uta1  = "uta1fly",
+	rhn1  = "rhn1fly",
+	rhn2  = "rhn2fly",
+	yav1  = "yav1fly",
+	yav2  = "yav2fly",
+	spa2  = "spa2fly",
+	spa4  = "spa2fly",
+}
 -- Sets up the map preview based on the current selection
 function ifs_missionselect_pcMulti_fnSetMapPreview(this)
 --	print("ifs_missionselect_pcMulti_fnSetMapPreview")
@@ -642,13 +678,27 @@ function ifs_missionselect_pcMulti_fnSetMapPreview(this)
 		idx = 1
 		print("ifs_missionselect_pcMulti_fnSetMapPreview(): Defaulting index to 1")
 	end
-	local r4 = missionselect_listbox_contents[idx]
-	movieName, movieFile = missionlist_fnGetMovieName(r4)
+	local selection = missionselect_listbox_contents[idx]
+	print("calling missionlist_fnGetMovieName:", idx )
+	movieName, movieFile = missionlist_fnGetMovieName(selection)
+	-- Stored movie name:    MOVIES\pre-movie    preview-loop
+	local key = ""
+	if (selection ~= nil and selection.mapluafile ~= nil) then
+		key =  string.sub(selection.mapluafile, 1, 4)
+		print("key:", key)
+		if (shell_movies_included[key] ~= nil)then
+			movieFile = "MOVIES/shell"
+			movieName = shell_movies_included[key]
+			print("Found built-in movie preview :)", movieName)
+		end
+	end
 	
-	--local num = pc_missionselect_name_listboxL_layout.SelectedIdx or 1
+	if (movieFile == nil or (string.lower(movieFile) == "movies\\pre-movie") )then
+		movieFile = "MOVIES/shell"
+		movieName = this.movieBackground
+	end
 
-	--local Selection = missionselect_listbox_contents[num]
-	--movieName, movieFile = missionlist_fnGetMovieName(Selection)
+	print("result: ", tostring(movieName), tostring(movieFile))
 
 	if (movieName) then
 		--ifelem_shellscreen_fnStartMovie(movieName.."fly", nil, this.movieX,this.movieY,this.movieW,this.movieH)
@@ -656,9 +706,9 @@ function ifs_missionselect_pcMulti_fnSetMapPreview(this)
 		this.movieTime = 0.5
 		this.movieFile = movieFile
 		
-		print("ifs_missionselect_pcMulti_fnSetMapPreview(): Stored movie name, file: ", movieName, movieFile)
+		print("ifs_missionselect_pcMulti_fnSetMapPreview(): Stored movie name:", movieFile, movieName)
 	else
-		ifelem_shellscreen_fnStopMovie()		
+		--ifelem_shellscreen_fnStopMovie()		
 	end
 	IFObj_fnSetVis(this.Map,nil)
 end
@@ -1053,14 +1103,7 @@ end
 -- pass the name of the downloadable content movie file to open it, or nil to open
 -- the normal DVD flythrough movie file.
 function ifs_missionselect_pcMulti_ChangeMovieFile(movieFile, isMissionselect)
---	print("ifs_missionselect_pcMulti_ChangeMovieFile(",movieFile,")")
-
-	if(not movieFile ) then 
-		print("ifs_missionselect_pcMulti_ChangeMovieFile(): MovieFile is nil")
-	else 
-		print("ifs_missionselect_pcMulti_ChangeMovieFile(): MovieFile:", file) -- looks like defect. -BAD_AL 
-	end 
-	
+	print("ifs_missionselect_pcMulti_ChangeMovieFile(): MovieFile:", tostring(movieFile))
 	local this = nil
 	if isMissionselect then
 		this = ifs_missionselect
@@ -1076,7 +1119,6 @@ function ifs_missionselect_pcMulti_ChangeMovieFile(movieFile, isMissionselect)
 	-- remember this for next time
 	this.lastMovieFile = movieFile
 	print("ifs_missionselect_pcMulti_ChangeMovieFile(): Closed any open movie")
-	
 	-- close the last one
 	ScriptCB_CloseMovie()
 	
@@ -1086,8 +1128,7 @@ function ifs_missionselect_pcMulti_ChangeMovieFile(movieFile, isMissionselect)
 	if not movieFile then
 		return
 	end
-	
-	
+
 	-- open the new one
 	-- local dcPrefix = "dc:"
 	 local pal = ""
@@ -1104,11 +1145,10 @@ function ifs_missionselect_pcMulti_ChangeMovieFile(movieFile, isMissionselect)
 	-- normal looks like this:          "movies\\fly.mvs"
 	local fullpath = movieFile .. pal .. ".mvs"
 	print("ifs_missionselect_pcMulti_ChangeMovieFile(): Opening movie:", fullpath)
-	
-	ScriptCB_OpenMovie(fullpath, "")
-	
+	print("MovieFile exists: ".. ScriptCB_IsFileExist(fullpath))
+	gMovieStream = fullpath
+	ScriptCB_OpenMovie(gMovieStream, "")
 	print("ifs_missionselect_pcMulti_ChangeMovieFile(): Finished opening movie")
-	
 end
 
 function ifs_missionselect_pcMulti_fnSourceButtonUpdate( this )
@@ -1970,6 +2010,7 @@ ifs_missionselect_pcMulti = NewIFShellScreen {
 	EraMode = nil,
 	
 	Enter = function(this, bFwd)
+		print("ifs_missionselect_pcMulti.Enter:")
 		-- using new pc shell
 		ifs_missionselect_pcMulti_fnUsingNewShell( this )
 		
@@ -4232,5 +4273,3 @@ ifs_missionselect_pcMulti_fnBuildScreen(ifs_missionselect_pcMulti)
 ifs_missionselect_pcMulti_fnBuildScreen = nil -- dump out of memory to save
 
 AddIFScreen(ifs_missionselect_pcMulti,"ifs_missionselect_pcMulti")
-
-print("Lets go Brandon! Why no movie?")

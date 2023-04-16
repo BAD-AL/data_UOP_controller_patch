@@ -53,6 +53,8 @@ ScriptCB_DoFile("utility_functions2")
 print("game_interface: Reading in custom strings")
 ReadDataFile("v1.3patch_strings.lvl")
 
+--ReadDataFile("core.lvl") -- read in these too
+
 local maxScripts = 10
 local i = nil
 
@@ -199,6 +201,11 @@ if(ScriptCB_GetOnlineService() == "XLive") then
 	ScriptCB_DoFile("ifs_mpxl_voicemail")
 else
 	ScriptCB_DoFile("ifs_mpgs_friends")
+end
+
+if (ScriptCB_IsFileExist("addon\\000\\core.lvl") == 1) then 
+	print("Reading in extra strings")
+	ReadDataFile("addon\\000\\core.lvl")
 end
 
 print("game_interface: Exited")

@@ -429,6 +429,58 @@ function ifs_missionselect_console_fnShowHideListboxes(this,bShowThem)
 	AnimationMgr_AddAnimation(this.PlayListbox, { fStartAlpha = A1, fEndAlpha = A2,})
 end
 
+function ifs_missionselect_console_fnUpdateMovie(this)
+	if shell_movies_included == nil then -- this table should have been defined in ifs_missionselect_pcMulti
+		return 
+	end
+	local MapSelection = missionselect_listbox_contents[ifs_ms_MapList_layout.SelectedIdx]
+	movieName, movieFile = missionlist_fnGetMovieName(MapSelection)
+	-- Stored movie name:    MOVIES\pre-movie    preview-loop
+	local key = ""
+	if (MapSelection ~= nil and MapSelection.mapluafile ~= nil) then
+		key =  string.sub(MapSelection.mapluafile, 1, 4)
+		print("key:", key)
+		if (shell_movies_included[key] ~= nil)then
+			movieFile = "MOVIES/shell"
+			movieName = shell_movies_included[key]
+			print("Found built-in movie preview :)", movieName)
+		end
+	end
+	if (movieFile == nil or (string.lower(movieFile) == "movies\\pre-movie") )then
+		movieFile = "MOVIES/shell"
+		movieName = this.movieBackground
+		local randomNumber = math.random(1, 2)
+		if randomNumber == 2 then
+			this.movieName = "shell_sub_left"
+		end
+	end
+	if (movieName) then
+		this.movieName = movieName
+		this.movieTime = 0.5
+		this.movieFile = movieFile
+	else
+		this.movieFile = "MOVIES/shell"
+		this.movieName = this.movieBackground
+	end
+	SetMovie_console( this)
+end
+
+function SetMovie_console(this)
+	print("SetMovie_console:", tostring(this.movieFile), tostring(this.movieName))
+
+	local fullpath = this.movieFile .. ".mvs"
+	if( gMovieStream ~= fullpath) then
+		ScriptCB_CloseMovie()
+		gMovieStream = fullpath
+		ScriptCB_OpenMovie(gMovieStream, "")
+	end
+	if( gMovieName ~= this.movieName) then
+		gMovieName = this.movieName
+		ScriptCB_StopMovie()
+		ifelem_shellscreen_fnStartMovie(this.movieName,1, nil, true)
+	end
+end
+
 -- Helper function: adjusts the helptext in the info boxes up top
 function ifs_missionselect_console_fnUpdateInfoBoxes(this)
 	local MapSelection = missionselect_listbox_contents[ifs_ms_MapList_layout.SelectedIdx]
@@ -649,6 +701,7 @@ function ifs_missionselect_console_fnUpdateScreen(this)
 	ifs_missionselect_console_fnUpdateButtons(this)
 	ifs_missionselect_console_fnUpdateHelptext(this)
 	ifs_missionselect_console_fnUpdateInfoBoxes(this)
+	ifs_missionselect_console_fnUpdateMovie(this)
 end
 
 -- Helper function: clears the playlist

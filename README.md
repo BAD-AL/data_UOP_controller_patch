@@ -29,7 +29,7 @@ I've been tinkering with that release and have gotten it into a functional state
     * GameData/addon/AAA-v1.3patch (no changes from the un-official patch release)
     * GameData/data/_lvl_pc/custom_gc_10.lvl
     * GameData/data/_lvl_pc/user_script_10.lvl
-    * GameData/data/_lvl_pc/v1.3patch_strings.lvl
+    * GameData/data/_lvl_pc/v1.3patch_strings.lvl ( this is modified, adds more strings than the uop)
   5. The following files will be overwritten (so back these up):
     * GameData/BattlefrontII.exe
     * GameData/alsoft.ini
@@ -41,6 +41,7 @@ I've been tinkering with that release and have gotten it into a functional state
     * GameData/data/_LVL_PC/load/load.lvl
     * GameData/data/_LVL_PC/load/common.lvl
     * GameData/data/_LVL_PC/common.lvl
+    * GameData/data/_LVL_PC/core.lvl
     * GameData/data/_LVL_PC/ingame.lvl
     * GameData/data/_LVL_PC/shell.lvl
 
@@ -52,3 +53,4 @@ I've been tinkering with that release and have gotten it into a functional state
  * Disney for continued support
  * GT-Anakin for reverse-engeneering many of the UOP Lua files
  * Zerted for the original UOP.
+ * Kade for inspiring me to return/fixup the menus
