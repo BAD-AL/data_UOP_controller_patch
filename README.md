@@ -2,8 +2,8 @@
 https://github.com/BAD-AL/data_UOP_controller_patch
 
 
-[![PC Controller Support](ControllerSupportThumbnail.png)](https://youtu.be/7EUr0WNEzAk "PC Controller Support")
-https://youtu.be/7EUr0WNEzAk
+[![PC Controller Support](ControllerSupportThumbnail.png)](https://youtu.be/pz5e2ZpOyVw "PC Controller Support")
+https://youtu.be/pz5e2ZpOyVw
 
 ## About
 In February 2021 There was an Update to Star Wars Battlefront II on Steam.
