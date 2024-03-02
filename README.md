@@ -25,25 +25,25 @@ I've been tinkering with that release and have gotten it into a functional state
   2. Backup your files (see the notes below to see which files to backup).
   3. Unzip the release package, copy and paste the 'GameData' folder over your 'GameData' folder.
   4. The following files/folders will be added:
-    * GameData/addon/000
-    * GameData/addon/AAA-v1.3patch (no changes from the un-official patch release)
-    * GameData/data/_lvl_pc/custom_gc_10.lvl
-    * GameData/data/_lvl_pc/user_script_10.lvl
-    * GameData/data/_lvl_pc/v1.3patch_strings.lvl ( this is modified, adds more strings than the uop)
+ * GameData/addon/000
+ * GameData/addon/AAA-v1.3patch (no changes from the un-official patch release)
+ * GameData/data/_lvl_pc/custom_gc_10.lvl
+ * GameData/data/_lvl_pc/user_script_10.lvl
+ * GameData/data/_lvl_pc/v1.3patch_strings.lvl ( this is modified, adds more strings than the uop)
   5. The following files will be overwritten (so back these up):
-    * GameData/BattlefrontII.exe
-    * GameData/alsoft.ini
-    * GameData/Galaxy.dll
-    * GameData/OpenAI32.dll
-    * GameData/steam_api.dll
-    * GameData/data/_LVL_PC/movies/pre-movie.mvs
-    * GameData/data/_LVL_PC/movies/shell.mvs
-    * GameData/data/_LVL_PC/load/load.lvl
-    * GameData/data/_LVL_PC/load/common.lvl
-    * GameData/data/_LVL_PC/common.lvl
-    * GameData/data/_LVL_PC/core.lvl
-    * GameData/data/_LVL_PC/ingame.lvl
-    * GameData/data/_LVL_PC/shell.lvl
+ * GameData/BattlefrontII.exe
+ * GameData/alsoft.ini
+ * GameData/Galaxy.dll
+ * GameData/OpenAI32.dll
+ * GameData/steam_api.dll
+ * GameData/data/_LVL_PC/movies/pre-movie.mvs
+ * GameData/data/_LVL_PC/movies/shell.mvs
+ * GameData/data/_LVL_PC/load/load.lvl
+ * GameData/data/_LVL_PC/load/common.lvl
+ * GameData/data/_LVL_PC/common.lvl
+ * GameData/data/_LVL_PC/core.lvl
+ * GameData/data/_LVL_PC/ingame.lvl
+ * GameData/data/_LVL_PC/shell.lvl
 
 ## BF2 Modder
  * BAD_AL
