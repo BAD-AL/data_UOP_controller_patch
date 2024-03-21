@@ -12,6 +12,15 @@ The release added native controller support to the Steam version of the Game.
 The update was reverted the next day due to bugs and incompatibilities with the un-official patch. 
 I've been tinkering with that release and have gotten it into a functional state with the un-official patch.
 
+## Mapping Roll
+1. Enable Steam Input
+2. Select 'Gamepad' as the Current Button Layout
+3. Edit Layout
+4. 'B' Button ➤ Add Command (Select 'Alt' key)
+5. 'B' Button 'Command 2' ➤ settings ➤ 'Double Press'
+
+Now the 'Roll' will happen when you quickly double press the 'B' Button. (Thanks to  bleppyboo from YouTube comments)
+
 ## Known bugs:
  * Mouse doesn't work to select planets in galactic conquest. Workaround - use the dpad or left thumbstick instead.
  * (with UOP Galactic Conquest) Default units sometimes replaced with units from a GC mod 
