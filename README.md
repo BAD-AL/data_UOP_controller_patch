@@ -31,6 +31,8 @@ It is a '.NET Framework' app, it should work under 'mono' as well.
 
 To use it, double click to launch, select profile and edit profile manuallt or press the 'auto fix' button, then save and exit the program.
 
+Thanks to Ivanproff for the [info mentioned here](https://github.com/BAD-AL/data_UOP_controller_patch/issues/3) :)
+
 
 ## Known bugs:
  * Mouse doesn't work to select planets in galactic conquest. Workaround - use the dpad or left thumbstick instead.
