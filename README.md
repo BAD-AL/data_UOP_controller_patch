@@ -12,7 +12,7 @@ The release added native controller support to the Steam version of the Game.
 The update was reverted the next day due to bugs and incompatibilities with the un-official patch. 
 I've been tinkering with that release and have gotten it into a functional state with the un-official patch.
 
-## Mapping Roll
+## Mapping Roll (Via Steam Input)
 1. Enable Steam Input
 2. Select 'Gamepad' as the Current Button Layout
 3. Edit Layout
@@ -20,6 +20,17 @@ I've been tinkering with that release and have gotten it into a functional state
 5. 'B' Button 'Command 2' ➤ settings ➤ 'Double Press'
 
 Now the 'Roll' will happen when you quickly double press the 'B' Button. (Thanks to  bleppyboo from YouTube comments)
+
+## Mapping Roll & Droidika Transform via Profile Editing 
+I created a Profile editor tool that will allow you to edit some of the Controller functions.
+
+Download the program exe 
+[here](https://github.com/BAD-AL/data_UOP_controller_patch/blob/main/BF2_Steam_Controller_Profile_Config/bin/Debug/BF2_Steam_Controller_Profile_Config.exe):
+
+It is a '.NET Framework' app, it should work under 'mono' as well.
+
+To use it, double click to launch, select profile and edit profile manuallt or press the 'auto fix' button, then save and exit the program.
+
 
 ## Known bugs:
  * Mouse doesn't work to select planets in galactic conquest. Workaround - use the dpad or left thumbstick instead.
