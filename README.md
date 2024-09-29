@@ -1,6 +1,12 @@
 # Repository
 https://github.com/BAD-AL/data_UOP_controller_patch
 
+## Works with
+* XBOX Controllers
+* Steamdeck main controller
+* Stadia Controller
+
+Note: People have mentioned trouble with Dual Shock 4 controller.
 
 [![PC Controller Support](ControllerSupportThumbnail.png)](https://youtu.be/pz5e2ZpOyVw "PC Controller Support")
 https://youtu.be/pz5e2ZpOyVw
